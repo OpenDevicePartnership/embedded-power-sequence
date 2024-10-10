@@ -1,0 +1,18 @@
+[package]
+name = "embedded-power-sequence"
+version = "0.1.0"
+authors = [ "Felipe Balbi <felipe@balbi.sh>" ]
+edition = "2021"
+license = "MIT"
+description = "An SoC Power Sequencing Abstraction"
+repository = "https://github.com/pop-project/embedded-power-sequence"
+readme = "README.md"
+keywords = [ "no_std", "embedded", "power", "sequence", "power-sequence" ]
+categories = [ "embedded", "no-std" ]
+rust-version = "1.75"
+
+[dependencies]
+defmt = { version = "0.3.8", optional = true }
+
+[features]
+defmt = ["dep:defmt"]
