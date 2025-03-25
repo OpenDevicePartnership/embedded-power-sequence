@@ -69,12 +69,53 @@ impl Error for core::convert::Infallible {
     }
 }
 
+/// A representation for a device's power sequence
 pub trait PowerSequence: ErrorType {
     #[power_state]
+    /// Power the device on.
     async fn power_on(&mut self) -> Result<(), Self::Error>;
 
     #[power_state]
+    /// Power the device off. Usually a direct reverse of [`PowerSequence::power_on`].
     async fn power_off(&mut self) -> Result<(), Self::Error>;
+
+    #[power_state]
+    /// Put device in idle state. The Windows operating system refers
+    /// to this as Modern Standby
+    async fn idle(&mut self) -> Result<(), Self::Error> {
+        Ok(())
+    }
+
+    #[power_state]
+    /// The reverse operation of [`PowerSequence::idle`].
+    async fn wake_up(&mut self) -> Result<(), Self::Error> {
+        Ok(())
+    }
+
+    #[power_state]
+    /// Commonly referred to as "Suspend To RAM".
+    async fn suspend(&mut self) -> Result<(), Self::Error> {
+        Ok(())
+    }
+
+    #[power_state]
+    /// Wake from Suspend to RAM state.
+    async fn resume(&mut self) -> Result<(), Self::Error> {
+        Ok(())
+    }
+
+    #[power_state]
+    /// Commonly refered to as "Suspend to Disk".
+    async fn hibernate(&mut self) -> Result<(), Self::Error> {
+        self.power_off().await
+    }
+
+    #[power_state]
+    /// Wake from Suspend to Disk. In many cases, this is the same as
+    /// [`PowerSequence::power_on`].
+    async fn activate(&mut self) -> Result<(), Self::Error> {
+        self.power_on().await
+    }
 }
 
 impl<T: PowerSequence + ?Sized> PowerSequence for &mut T {
@@ -88,5 +129,41 @@ impl<T: PowerSequence + ?Sized> PowerSequence for &mut T {
     #[power_state]
     async fn power_off(&mut self) -> Result<(), Self::Error> {
         T::power_off(self).await
+    }
+
+    #[inline]
+    #[power_state]
+    async fn idle(&mut self) -> Result<(), Self::Error> {
+        T::idle(self).await
+    }
+
+    #[inline]
+    #[power_state]
+    async fn wake_up(&mut self) -> Result<(), Self::Error> {
+        T::wake_up(self).await
+    }
+
+    #[inline]
+    #[power_state]
+    async fn suspend(&mut self) -> Result<(), Self::Error> {
+        T::suspend(self).await
+    }
+
+    #[inline]
+    #[power_state]
+    async fn resume(&mut self) -> Result<(), Self::Error> {
+        T::resume(self).await
+    }
+
+    #[inline]
+    #[power_state]
+    async fn hibernate(&mut self) -> Result<(), Self::Error> {
+        T::hibernate(self).await
+    }
+
+    #[inline]
+    #[power_state]
+    async fn activate(&mut self) -> Result<(), Self::Error> {
+        T::activate(self).await
     }
 }
