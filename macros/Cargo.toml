@@ -1,19 +1,20 @@
 [package]
-name = "embedded-power-sequence"
+name = "macros"
 version = "0.1.0"
-authors = [ "Felipe Balbi <felipe@balbi.sh>" ]
+authors = [ "Felipe Balbi <febalbi@microsoft.com>" ]
 edition = "2021"
 license = "MIT"
-description = "An SoC Power Sequencing Abstraction"
+description = "Macros for the Power Sequencing Abstraction"
 repository = "https://github.com/OpenDevicePartnership/embedded-power-sequence"
 readme = "README.md"
 keywords = [ "no_std", "embedded", "power", "sequence", "power-sequence" ]
 categories = [ "embedded", "no-std" ]
 rust-version = "1.75"
 
-[dependencies]
-defmt = { version = "0.3.8", optional = true }
-macros = { path = "macros" }
+[lib]
+proc-macro = true
 
-[features]
-defmt = ["dep:defmt"]
+[dependencies]
+proc-macro2 = "1.0.94"
+quote = "1.0.40"
+syn = { version = "2.0.100", features = ["full"] }

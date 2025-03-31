@@ -4,6 +4,8 @@
 #![cfg_attr(not(test), no_std)]
 #![allow(async_fn_in_trait)]
 
+use macros::power_state;
+
 /// Power Sequence error.
 pub trait Error: core::fmt::Debug {
     /// Convert error to a generic Power Sequence error kind.
@@ -68,17 +70,22 @@ impl Error for core::convert::Infallible {
 }
 
 pub trait PowerSequence: ErrorType {
+    #[power_state]
     async fn power_on(&mut self) -> Result<(), Self::Error>;
+
+    #[power_state]
     async fn power_off(&mut self) -> Result<(), Self::Error>;
 }
 
 impl<T: PowerSequence + ?Sized> PowerSequence for &mut T {
     #[inline]
+    #[power_state]
     async fn power_on(&mut self) -> Result<(), Self::Error> {
         T::power_on(self).await
     }
 
     #[inline]
+    #[power_state]
     async fn power_off(&mut self) -> Result<(), Self::Error> {
         T::power_off(self).await
     }
